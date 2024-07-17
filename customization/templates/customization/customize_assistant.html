@@ -1,0 +1,14 @@
+<!-- templates/myapp/customize_assistant.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Customize Assistant</title>
+</head>
+<body>
+    <h1>Customize Assistant</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+    </form>
+</body>
+</html>
