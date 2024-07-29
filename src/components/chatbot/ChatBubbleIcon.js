@@ -12,7 +12,7 @@ const ChatBubbleIcon = ({ assistantId, handleClick }) => {
 
   const fetchHeaderColor = async () => {
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/get_assistant', { input: assistantId });
+      const response = await axios.post('http://127.0.0.1:8000/api/get_preview', { input: assistantId });
       const data = response.data;
       setHeaderColor(data.header_color);
     } catch (error) {

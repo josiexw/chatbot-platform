@@ -10,12 +10,14 @@
   left: 50%;
   transform: translate(-50%, -50%);
   width: 80%;
+  height: 80%;
   max-width: 600px;
   background-color: white;
   border: 1px solid #ddd;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   padding: 20px;
   z-index: 1000;
+  overflow: auto;
 }
 
 .popup-inner {

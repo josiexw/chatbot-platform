@@ -17,6 +17,7 @@ const Chat = ({ assistantId, handleClose }) => {
   const [assistantColor, setAssistantColor] = useState(null);
   const [userColor, setUserColor] = useState(null);
   const [threadId, setThreadId] = useState(null);
+  const [shouldSendMessage, setShouldSendMessage] = useState(false);
   const messagesEndRef = useRef(null);
   const hasInitializedRef = useRef(false);
 
@@ -30,15 +31,19 @@ const Chat = ({ assistantId, handleClose }) => {
   // Initialize chatbot on backend
   const fetchAssistant = async () => {
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/get_assistant', { input: assistantId });
+      const response = await axios.post('http://127.0.0.1:8000/api/get_preview', { input: assistantId });
       const data = response.data;
-      setAssistant(data.assistant_id);
       setChatTitle(data.title);
       setHeaderColor(data.header_color);
       setAssistantColor(data.assistant_color);
       setUserColor(data.user_color);
       messages.push(createNewMessage(data.assistant_start_message, false, data.assistant_color));
+      for (var i = 0; i < data.suggested_responses.length; i++) {
+        messages.push(createNewMessage(data.suggested_responses[i], false, null, true))
+      }
       setMessages([...messages]);
+      await axios.post('http://127.0.0.1:8000/api/get_assistant', { input: assistantId });
+      setAssistant(data.assistant_id);
     } catch (error) {
       console.error('Error fetching assistant:', error);
     }
@@ -52,7 +57,6 @@ const Chat = ({ assistantId, handleClose }) => {
         'assistant_id': assistant,
         'thread_id': threadId
       });
-      console.log('data:', response)
       return response.data;
     } catch (error) {
       console.error('Error fetching message response:', error)
@@ -60,13 +64,12 @@ const Chat = ({ assistantId, handleClose }) => {
   };
 
   const initChatBot = async () => {
-    console.log("Running initChatBot");
     await fetchAssistant();
-    console.log("Assistant initialized:", assistant)
+    console.log("Assistant initialized")
   };
 
-  const createNewMessage = (content, isUser, color) => {
-    return new MessageDto(isUser, content, color);
+  const createNewMessage = (content, isUser, color, isSuggested=false) => {
+    return new MessageDto(isUser, content, color, isSuggested);
   };
 
   const handleSendMessage = async () => {
@@ -80,7 +83,6 @@ const Chat = ({ assistantId, handleClose }) => {
 
     setIsWaiting(true);
     const data = await fetchMessage(input);
-    console.log("Chatbot response:", data.response)
     setThreadId(data.thread_id)
     setIsWaiting(false);
 
@@ -96,6 +98,18 @@ const Chat = ({ assistantId, handleClose }) => {
       e.preventDefault();
       handleSendMessage();
     }
+  };
+
+  useEffect(() => {
+    if (shouldSendMessage) {
+      handleSendMessage();
+      setShouldSendMessage(false);
+    }
+  }, [input]);
+
+  const handleSuggestedMessageClick = (content) => {
+    setInput(content);
+    setShouldSendMessage(true);
   };
 
   useEffect(() => {
@@ -127,7 +141,7 @@ const Chat = ({ assistantId, handleClose }) => {
       </AppBar>
       <Grid direction="column" style={{ flexGrow: 1, overflowY: 'auto', padding: '16px' }}>
         {messages.map((message, index) => (
-          <Message key={index} message={message} />
+          <Message key={index} message={message} onMessageClick={handleSuggestedMessageClick} />
         ))}
         <div ref={messagesEndRef} />
       </Grid>

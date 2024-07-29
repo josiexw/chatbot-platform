@@ -3,12 +3,14 @@ import axios from 'axios';
 import CreateAssistant from './CreateAssistant';
 import PreviewAssistant from './PreviewAssistant';
 import EmbedAssistant from './EmbedAssistant';
+import EditAssistant from './EditAssistant';
 
 const Dashboard = () => {
   const [assistants, setAssistants] = useState([]);
   const [showPreview, setShowPreview] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
   const [showEmbed, setShowEmbed] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
   const [selectedAssistant, setSelectedAssistant] = useState(null);
 
   useEffect(() => {
@@ -44,6 +46,11 @@ const Dashboard = () => {
     }
   };
 
+  const handleEdit = (assistant) => {
+    setSelectedAssistant(assistant);
+    setShowEdit(true);
+  };
+
   const handleEmbed = (assistant) => {
     setSelectedAssistant(assistant);
     setShowEmbed(true);
@@ -55,6 +62,11 @@ const Dashboard = () => {
 
   const closeCreatePopup = () => {
     setShowCreate(false);
+    fetchAssistants();
+  };
+
+  const closeEditPopup = () => {
+    setShowEdit(false);
     fetchAssistants();
   };
 
@@ -70,6 +82,7 @@ const Dashboard = () => {
           <p>{assistant.instructions}</p>
           <button onClick={() => handlePreview(assistant)}>Preview</button>
           <button onClick={() => handleEmbed(assistant)}>Embed</button>
+          <button onClick={() => handleEdit(assistant)}>Edit</button>
           <button onClick={() => handleDelete(assistant)}>Delete</button>
         </div>
       ))}
@@ -85,6 +98,13 @@ const Dashboard = () => {
         <EmbedAssistant
           assistant={selectedAssistant}
           onClose={() => setShowEmbed(false)}
+        />
+      )}
+
+      {showEdit && (
+        <EditAssistant
+          assistant={selectedAssistant}
+          onClose={closeEditPopup}
         />
       )}
 
