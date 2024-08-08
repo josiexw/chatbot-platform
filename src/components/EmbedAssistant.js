@@ -2,11 +2,15 @@ import React from 'react';
 
 const EmbedAssistant = ({ assistant, onClose }) => {
   const embedCode =
-  `<div id="chatbot-container"></div>
-    <script src="https://josiexw.github.io/chatbot-widget/static/js/main.f03bb32e.js?assistantId=${assistant.id}"></script>
-    <script>
+  `[insert in head]
+<link rel="stylesheet" href="https://josiexw.github.io/chatbot-widget/static/css/main.e6c13ad2.css"
+
+[insert in body]
+<div id="chatbot-container"></div>
+    <script src="https://josiexw.github.io/chatbot-widget/static/js/main.7930226b.js"></script>
+      <script>
         ChatbotWidget.init({ someConfig: 'value' }, document.getElementById('chatbot-container'));
-    </script>`;
+      </script>`;
 
   return (
     <div className="popup">
