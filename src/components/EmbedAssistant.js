@@ -7,7 +7,7 @@ const EmbedAssistant = ({ assistant, onClose }) => {
 
 [insert in body]
 <div id="chatbot-container"></div>
-    <script src="https://josiexw.github.io/chatbot-widget/static/js/main.7930226b.js"></script>
+    <script src="https://josiexw.github.io/chatbot-widget/static/js/main.7d8e5977.js"></script>
       <script>
         ChatbotWidget.init({ someConfig: 'value' }, document.getElementById('chatbot-container'));
       </script>`;
