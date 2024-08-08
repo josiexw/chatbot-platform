@@ -1,3 +1,4 @@
+import shortuuid
 from django.db import models
 
 class Assistant(models.Model):
@@ -29,7 +30,7 @@ class Assistant(models.Model):
         ('claude-3-haiku-20240307', 'claude-3-haiku-20240307')
     ]
 
-    id = models.UUIDField(primary_key=True)
+    id = models.CharField(primary_key=True, max_length=22)
     name = models.CharField(max_length=256)
     instructions = models.TextField(max_length=2000)
     tools = models.CharField(max_length=50, choices=ASSISTANT_TOOLS_CHOICES)
@@ -47,7 +48,7 @@ class Chat(models.Model):
     user_color = models.CharField(max_length=7)
     assistant_start_message = models.TextField(max_length=2000)
     suggested_responses = models.JSONField(default=list)
-    id = models.UUIDField(primary_key=True)
+    id = models.CharField(primary_key=True, max_length=22)
     
     def __str__(self):
         return self.title

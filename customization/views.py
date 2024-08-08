@@ -1,5 +1,5 @@
 from django.shortcuts import render
-import uuid
+import shortuuid
 from django.http import JsonResponse, HttpResponse
 import logging
 from .models import Assistant, Chat, File
@@ -29,7 +29,8 @@ def make_assistant(request):
                 assistant_color = form.cleaned_data['assistant_color']
                 user_color = form.cleaned_data['user_color']
                 assistant_start_message = form.cleaned_data['assistant_start_message']
-                assistant_id = str(uuid.uuid4())
+                suggested_responses = form.cleaned_data['suggested_responses']
+                assistant_id = str(shortuuid.uuid())
 
                 # Create and save the Assistant instance
                 assistant = Assistant(
@@ -57,7 +58,8 @@ def make_assistant(request):
                     assistant_color=assistant_color,
                     user_color=user_color,
                     assistant_start_message=assistant_start_message,
-                    id=assistant_id
+                    id=assistant_id,
+                    suggested_responses=suggested_responses
                 )
                 chat.save()
 
@@ -161,6 +163,7 @@ def edit_assistant(request):
                 'assistant_color': chat.assistant_color,
                 'user_color': chat.user_color,
                 'assistant_start_message': chat.assistant_start_message,
+                'suggested_responses': ', '.join(chat.suggested_responses)
             }
             form = AssistantCustomizationForm(initial=initial_data)
 
